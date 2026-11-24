@@ -54,6 +54,12 @@ export default function Header() {
   return (
     <header className="site-header">
       <a className="skip-link" href="#main">Skip to content</a>
+      <div className="emergency-topbar">
+        <div className="page-wrap emergency-topbar-inner">
+          <span><Icon name="clock" size={14} /><strong>24/7 emergency service available</strong><span className="topbar-detail">Weekends &amp; holidays</span></span>
+          <a href={site.phoneLink}>Call {site.phone}</a>
+        </div>
+      </div>
       <div className="header-inner page-wrap">
         <Link className="brand" to="/" aria-label="M&J Water Wells home">
           <img className="brand-logo-image" src="/images/logo.png" alt="M&J Water Wells" width="204" height="105" />

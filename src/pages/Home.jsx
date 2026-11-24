@@ -28,6 +28,7 @@ const businessSchema = {
 };
 
 const featureIcons = { home: "home", shield: "shield", phone: "phone" };
+const townId = (town) => `town-${town.toLowerCase().replace(/\s+/g, "-")}`;
 
 export default function Home() {
   return (
@@ -86,6 +87,24 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="reviews-section section-pad">
+        <div className="page-wrap reviews-inner">
+          <div className="reviews-copy">
+            <span className="eyebrow">Recommended by West Michigan neighbors</span>
+            <h2>See what local customers are saying.</h2>
+            <p>Read recent experiences and feedback for M&amp;J Water Wells on Google.</p>
+          </div>
+          <a
+            className="button button-outline-dark"
+            href={site.googleBusinessUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            View Google reviews <Icon name="arrowRight" size={17} />
+          </a>
+        </div>
+      </section>
+
       <section className="trust-section">
         <div className="page-wrap trust-inner">
           <div className="trust-title"><span className="eyebrow">Products we work with</span><h2>Trusted names.<br />Dependable systems.</h2></div>
@@ -99,18 +118,29 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="service-area-section section-pad">
+      <section id="service-areas" className="service-area-section section-pad">
         <div className="page-wrap area-layout">
           <div className="area-content">
             <SectionHeading eyebrow="Close to home" title="Proud to serve West Michigan." description="Based in Newaygo, we're on the road helping neighbors across the region." />
             <h3 className="area-subtitle">Communities we serve</h3>
-            <div className="town-list">{site.serviceAreas.towns.map((town) => <span key={town}><Icon name="mapPin" size={14} />{town}</span>)}</div>
+            <div className="town-list">{site.serviceAreas.towns.map((town) => <a key={town} href={`#${townId(town)}`}><Icon name="mapPin" size={14} />{town}</a>)}</div>
             <p className="county-copy"><strong>Also serving:</strong> {site.serviceAreas.counties.map((county) => `${county} County`).join(" · ")}<br />and communities across West Michigan.</p>
             <Link to="/contact" className="text-link">Check service in your area <Icon name="arrowRight" size={16} /></Link>
           </div>
           <div className="area-image">
             <img src="/images/west-michigan-farm.png" alt="A red barn and open field in West Michigan" width="800" height="450" loading="lazy" />
             <div className="area-image-note"><Icon name="mapPin" size={20} /><span><b>Rooted in Newaygo</b><small>Serving neighbors across West Michigan</small></span></div>
+          </div>
+        </div>
+        <div className="page-wrap town-coverage">
+          <h3>Well service in nearby towns</h3>
+          <div className="town-coverage-grid">
+            {site.serviceAreas.towns.map((town) => (
+              <article id={townId(town)} className="town-coverage-card" key={town}>
+                <h4>{town}, Michigan</h4>
+                <Link to="/contact" className="text-link">Ask about service here <Icon name="arrowRight" size={15} /></Link>
+              </article>
+            ))}
           </div>
         </div>
       </section>

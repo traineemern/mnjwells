@@ -15,8 +15,14 @@ export const site = {
     country: "US",
     formatted: "1038 Stanton Avenue, Newaygo, MI 49337",
   },
-  businessHours: "Call for current business hours",
-  emergencyHours: "Emergency service available on weekends and holidays",
+  businessHours: "Call for current regular hours",
+  emergencyHours: "24/7 emergency service available on weekends and holidays",
+  credentials: {
+    licenseLabel: "Michigan licensed driller",
+    licenseNumber: "",
+  },
+  googleBusinessUrl:
+    "https://www.google.com/maps/search/?api=1&query=M%26J%20Water%20Wells%201038%20Stanton%20Avenue%20Newaygo%20MI%2049337",
   siteUrl: import.meta.env.VITE_SITE_URL || "https://mandjwaterwells.com",
   formEndpoint: import.meta.env.VITE_FORMSPREE_ENDPOINT || "",
   owners: ["Mark", "Julie"],
@@ -59,6 +65,7 @@ export const site = {
       "Greenville",
       "Newaygo",
       "Fremont",
+      "Grant",
       "Hesperia",
       "Big Rapids",
     ],
@@ -136,7 +143,6 @@ export const site = {
       question: "How long does a well last?",
       answer:
         "A well's lifespan depends on its construction, local conditions, water use, and maintenance. If you have concerns about your well's performance, contact us to discuss an inspection.",
-      todo: true,
     },
     // TODO: Have the owner review this general answer for actual local well lifespans.
     // TODO: Have the owner review this general answer for local geology and permitting context.
@@ -144,7 +150,16 @@ export const site = {
       question: "How deep will my well need to be?",
       answer:
         "Well depth varies by location and the water source beneath a property. We can discuss local conditions and evaluate what your project may require after learning more about the site.",
-      todo: true,
+    },
+    {
+      question: "Should I have my well water tested?",
+      answer:
+        "Testing is a practical way to check the quality of private well water, especially if you notice a change in taste, smell, or appearance, or after work on the well. Ask your local health department about recommended tests and sampling, or contact us about water sampling.",
+    },
+    {
+      question: "What should I do if my water pressure drops?",
+      answer:
+        "First, check whether the pressure is low at one fixture or throughout the property. If it affects the whole system or drops suddenly, contact a well professional to check the pump, pressure tank, and system. Avoid opening pump controls or electrical equipment.",
     },
     {
       question: "Do you offer emergency service?",

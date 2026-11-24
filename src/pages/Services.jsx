@@ -48,7 +48,7 @@ export default function Services() {
           </div>
         </div>
       </section>
-      <CTA compact />
+      <CTA compact eyebrow="Start with the right solution" title="Planning a water project?" description="Tell us what you're working on, and we'll help you determine the right next step." />
     </>
   );
 }

@@ -77,7 +77,7 @@ For a user/organization site or custom domain, the default root asset base works
 
 Edit `src/data/site.js` for contact details, hours, services, service towns/counties, FAQs, service options, and page copy. Rebuild and deploy after changing the data. The layout and page components read from this file, so routine content changes do not require editing page markup.
 
-Replace the placeholder domain in `VITE_SITE_URL`, `public/robots.txt`, and `public/sitemap.xml` together when the final production domain is confirmed. Update the service-area map query in `src/pages/Contact.jsx` if the business wants a pin at its verified street address rather than the general Newaygo map.
+Replace the placeholder domain in `VITE_SITE_URL`, `public/robots.txt`, and `public/sitemap.xml` together when the final production domain is confirmed. The map and Google Business link are based on `site.address` and `site.googleBusinessUrl` in `src/data/site.js`. Replace the Google link with the exact verified profile URL and update the address once confirmed. Add the Michigan driller license number to `site.credentials.licenseNumber` only after it has been verified.
 
 ## Owner review checklist
 
@@ -90,8 +90,10 @@ Resolve each item before representing it as verified business information:
 - [ ] Confirm pump replacement and well abandonment/decommissioning wording and availability.
 - [ ] Confirm drilling capacities (2–10 inches; up to 12 inches drilling or replacement).
 - [ ] Add actual business hours and confirm the weekend/holiday emergency process.
+- [ ] Confirm any Michigan driller license number and certifications before publishing credentials.
+- [ ] Add the verified Google Business Profile/reviews link and approved customer review quotes, if available.
 - [ ] Confirm the canonical website domain and that the legacy redirects match the old site's URLs.
-- [ ] Review the FAQs marked `todo: true` in `src/data/site.js` (well lifespan, well depth, and estimate details).
+- [ ] Review the FAQ answers in `src/data/site.js` for local accuracy.
 - [ ] Set up the Formspree endpoint and confirm form delivery.
 - [ ] Verify image identifications and replace any low-resolution source photographs with original files.
 

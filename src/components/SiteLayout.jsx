@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
@@ -26,7 +26,7 @@ export default function SiteLayout() {
       <Footer />
       <div className="mobile-sticky-cta" aria-label="Quick contact">
         <a className="mobile-sticky-call" href={site.phoneLink}><Icon name="phone" size={18} />Call</a>
-        <a className="mobile-sticky-estimate" href="/contact"><Icon name="arrowRight" size={18} />Free estimate</a>
+        <Link className="mobile-sticky-estimate" to="/contact"><Icon name="arrowRight" size={18} />Free estimate</Link>
       </div>
     </div>
   );

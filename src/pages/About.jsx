@@ -53,7 +53,7 @@ export default function About() {
           <a className="button button-white" href={site.phoneLink}><Icon name="phone" size={17} />Call {site.phone}</a>
         </div>
       </section>
-      <CTA compact />
+      <CTA compact eyebrow="Local help, personal service" title="Let’s keep your water flowing." description="Contact our Newaygo team about well drilling or water system service." />
     </>
   );
 }

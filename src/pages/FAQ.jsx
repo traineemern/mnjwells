@@ -46,7 +46,7 @@ export default function FAQ() {
           </div>
         </div>
       </section>
-      <CTA compact />
+      <CTA compact eyebrow="Still have a question?" title="Talk through your situation." description="Every property and water system is different, so get a direct answer from our team." />
     </>
   );
 }

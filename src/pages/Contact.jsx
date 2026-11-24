@@ -130,13 +130,13 @@ export default function Contact() {
             </div>
             <div className="map-frame">
               <iframe
-                title="Map showing Newaygo, Michigan"
-                src="https://www.google.com/maps?q=Newaygo%2C%20MI&output=embed"
+                title={`Map showing ${site.address.formatted}`}
+                src={`https://www.google.com/maps?q=${encodeURIComponent(site.address.formatted)}&output=embed`}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
               />
-              <a href="https://maps.google.com/?q=Newaygo,+MI" target="_blank" rel="noreferrer">Open map in Google Maps <Icon name="arrowRight" size={14} /></a>
+              <a href={site.googleBusinessUrl} target="_blank" rel="noreferrer">Open in Google Maps <Icon name="arrowRight" size={14} /></a>
             </div>
           </aside>
         </div>

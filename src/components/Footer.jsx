@@ -29,7 +29,11 @@ export default function Footer() {
           <a href={site.phoneLink}><Icon name="phone" size={16} />{site.phone}</a>
           <a href={`mailto:${site.email}`}><Icon name="mail" size={16} />{site.email}</a>
           <p><Icon name="mapPin" size={16} />{site.address.street}<br /><span>{site.address.city}, {site.address.region} {site.address.postalCode}</span></p>
+          <p className="footer-hours">Regular hours: {site.businessHours}</p>
           <p className="footer-hours">{site.emergencyHours}</p>
+          {site.credentials.licenseNumber && (
+            <p className="footer-credential">{site.credentials.licenseLabel}: {site.credentials.licenseNumber}</p>
+          )}
         </div>
         <div className="footer-column">
           <h2>Ways to pay</h2>
