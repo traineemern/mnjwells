@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { site, pageMeta } from "../data/site.js";
 import Seo from "../components/Seo.jsx";
 import SectionHeading from "../components/SectionHeading.jsx";
 import CTA from "../components/CTA.jsx";
 import { Icon } from "../components/Icons.jsx";
+import { useReducedMotion } from "../motion/useReducedMotion";
+import { motionConfig } from "../motion/config";
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -16,10 +20,32 @@ const faqSchema = {
 };
 
 export default function FAQ() {
+  const reducedMotion = useReducedMotion();
+  const heroRef = useRef(null);
+  const [openIndex, setOpenIndex] = useState(0);
+
+  useEffect(() => {
+    if (reducedMotion) return undefined;
+    let gsapContext;
+    let cancelled = false;
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([{ gsap }, { ScrollTrigger }]) => {
+      if (cancelled) return;
+      gsap.registerPlugin(ScrollTrigger);
+      gsapContext = gsap.context(() => {
+        gsap.to(heroRef.current, {
+          y: 40,
+          ease: "none",
+          scrollTrigger: { trigger: ".faq-hero", start: "top top", end: "bottom top", scrub: true },
+        });
+      });
+    }).catch(() => {});
+    return () => { cancelled = true; gsapContext?.revert(); };
+  }, [reducedMotion]);
+
   return (
     <>
       <Seo {...pageMeta.faq} path="/faq" schema={faqSchema} />
-      <section className="page-hero faq-hero">
+      <section ref={heroRef} className="page-hero faq-hero">
         <div className="page-wrap page-hero-inner">
           <div className="breadcrumb"><Link to="/">Home</Link><span>/</span><span>FAQs</span></div>
           <span className="eyebrow eyebrow-light">A few things you might be wondering</span>
@@ -38,10 +64,31 @@ export default function FAQ() {
           </aside>
           <div className="faq-list">
             {site.faqs.map((faq, index) => (
-              <details className="faq-item" key={faq.question} open={index === 0}>
-                <summary><span className="faq-number">0{index + 1}</span><span>{faq.question}</span><span className="faq-chevron"><Icon name="chevronDown" size={19} /></span></summary>
-                <div className="faq-answer"><p>{faq.answer}</p></div>
-              </details>
+              <article className="faq-item" key={faq.question}>
+                <button
+                  className="faq-summary"
+                  type="button"
+                  aria-expanded={openIndex === index}
+                  onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
+                >
+                  <span className="faq-number">0{index + 1}</span>
+                  <span>{faq.question}</span>
+                  <span className="faq-chevron"><Icon name="chevronDown" size={19} /></span>
+                </button>
+                <AnimatePresence initial={false}>
+                  {openIndex === index && (
+                    <motion.div
+                      className="faq-answer"
+                      initial={reducedMotion ? false : { height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={reducedMotion ? undefined : { height: 0, opacity: 0 }}
+                      transition={{ duration: reducedMotion ? 0 : motionConfig.duration.ui, ease: motionConfig.ease }}
+                    >
+                      <p>{faq.answer}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </article>
             ))}
           </div>
         </div>

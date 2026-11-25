@@ -99,6 +99,7 @@ Resolve each item before representing it as verified business information:
 
 ## Notes
 
+- See `MOTION.md` for animation locations, tuning, reduced-motion behavior, and Lottie placeholder replacement.
 - Business information remains in one editable file, `src/data/site.js`; comments and this checklist flag details supplied as `[VERIFY]` and owner-editable FAQ placeholders as `TODO`.
 - Partner names are text treatments, not official logo files. Use approved partner logo artwork only if available.
 - The site includes local business and FAQ JSON-LD, per-route metadata/canonical tags, a sitemap, robots file, reduced-motion handling, keyboard focus states, and a mobile navigation focus trap.

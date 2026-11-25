@@ -1,9 +1,14 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "motion/react";
 import { site, pageMeta } from "../data/site.js";
 import Seo from "../components/Seo.jsx";
 import SectionHeading from "../components/SectionHeading.jsx";
 import CTA from "../components/CTA.jsx";
 import { Icon } from "../components/Icons.jsx";
+import { useReducedMotion } from "../motion/useReducedMotion";
+import { motionConfig } from "../motion/config";
+import ScrollReveal from "../motion/ScrollReveal";
 
 const businessSchema = {
   "@context": "https://schema.org",
@@ -31,21 +36,63 @@ const featureIcons = { home: "home", shield: "shield", phone: "phone" };
 const townId = (town) => `town-${town.toLowerCase().replace(/\s+/g, "-")}`;
 
 export default function Home() {
+  const reducedMotion = useReducedMotion();
+  const heroImageRef = useRef(null);
+
+  useEffect(() => {
+    if (reducedMotion) return undefined;
+    let gsapContext;
+    let cancelled = false;
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([{ gsap }, { ScrollTrigger }]) => {
+      if (cancelled) return;
+      gsap.registerPlugin(ScrollTrigger);
+      gsapContext = gsap.context(() => {
+        gsap.to(heroImageRef.current, {
+          y: 40,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      });
+    }).catch(() => {});
+    return () => {
+      cancelled = true;
+      gsapContext?.revert();
+    };
+  }, [reducedMotion]);
+
   return (
     <>
       <Seo {...pageMeta.home} path="/" schema={businessSchema} />
       <section className="hero">
-        <div className="hero-image" role="img" aria-label="M&J Water Wells drilling truck parked at a job site" />
+        <div ref={heroImageRef} className="hero-image" role="img" aria-label="M&J Water Wells drilling truck parked at a job site" />
         <div className="hero-shade" />
         <div className="hero-content page-wrap">
           <div className="hero-text">
             <span className="eyebrow eyebrow-light"><span className="eyebrow-dot" /> Family-owned in Newaygo, Michigan</span>
-            <h1>West Michigan&apos;s<br /><em>Well Drilling</em> Specialists!</h1>
-            <p>Dependable well drilling and water system service for homes, businesses, and farms across West Michigan.</p>
-            <div className="hero-actions">
+            <motion.h1
+              initial={reducedMotion ? false : { opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: reducedMotion ? 0 : 0.7, delay: reducedMotion ? 0 : 0, ease: motionConfig.ease }}
+            >West Michigan&apos;s<br /><em>Well Drilling</em> Specialists!</motion.h1>
+            <motion.p
+              initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: reducedMotion ? 0 : 0.55, delay: reducedMotion ? 0 : motionConfig.stagger.small, ease: motionConfig.ease }}
+            >Dependable well drilling and water system service for homes, businesses, and farms across West Michigan.</motion.p>
+            <motion.div
+              className="hero-actions"
+              initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: reducedMotion ? 0 : 0.55, delay: reducedMotion ? 0 : motionConfig.stagger.small * 2, ease: motionConfig.ease }}
+            >
               <a className="button button-primary button-large" href={site.phoneLink}><Icon name="phone" size={18} />Call {site.phone}</a>
               <Link className="button button-outline-light button-large" to="/contact">Request a free estimate <Icon name="arrowRight" size={18} /></Link>
-            </div>
+            </motion.div>
             <div className="hero-note"><Icon name="check" size={17} /> Local service. Straightforward answers.</div>
           </div>
           <div className="hero-photo-caption"><span className="caption-line" />On the job across West Michigan</div>
@@ -74,14 +121,20 @@ export default function Home() {
           <SectionHeading eyebrow="The M&J difference" title="Local know-how. Water you can count on." description="Whether you're planning a project or solving a water problem, our team is ready to talk it through." />
           <div className="feature-grid">
             {site.features.map((feature, index) => (
-              <article className="feature-card" key={feature.title}>
+              <ScrollReveal key={feature.title} delay={index * motionConfig.stagger.cards}>
+              <motion.article
+                className="feature-card"
+                whileHover={reducedMotion ? undefined : { y: -4 }}
+                transition={{ duration: motionConfig.duration.fast, ease: motionConfig.ease }}
+              >
                 <span className="feature-number">0{index + 1}</span>
                 <span className="icon-tile"><Icon name={featureIcons[feature.icon]} size={23} /></span>
                 <span className="eyebrow">{feature.eyebrow}</span>
                 <h3>{feature.title}</h3>
                 <p>{feature.description}</p>
                 <Link to={feature.href} className="text-link">{feature.linkText}<Icon name="arrowRight" size={16} /></Link>
-              </article>
+              </motion.article>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -123,7 +176,21 @@ export default function Home() {
           <div className="area-content">
             <SectionHeading eyebrow="Close to home" title="Proud to serve West Michigan." description="Based in Newaygo, we're on the road helping neighbors across the region." />
             <h3 className="area-subtitle">Communities we serve</h3>
-            <div className="town-list">{site.serviceAreas.towns.map((town) => <a key={town} href={`#${townId(town)}`}><Icon name="mapPin" size={14} />{town}</a>)}</div>
+            <motion.div
+              className="town-list"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: reducedMotion ? 0 : 0.07 } } }}
+            >
+              {site.serviceAreas.towns.map((town) => (
+                <motion.a
+                  key={town}
+                  href={`#${townId(town)}`}
+                  variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0, transition: { duration: reducedMotion ? 0 : motionConfig.duration.reveal, ease: motionConfig.ease } } }}
+                ><Icon name="mapPin" size={14} />{town}</motion.a>
+              ))}
+            </motion.div>
             <p className="county-copy"><strong>Also serving:</strong> {site.serviceAreas.counties.map((county) => `${county} County`).join(" · ")}<br />and communities across West Michigan.</p>
             <Link to="/contact" className="text-link">Check service in your area <Icon name="arrowRight" size={16} /></Link>
           </div>

@@ -52,6 +52,8 @@ img { display: block; max-width: 100%; }
 .emergency-topbar-inner { min-height: 30px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 10px; font-weight: 600; }
 .emergency-topbar-inner span, .emergency-topbar-inner a { display: inline-flex; align-items: center; gap: 7px; }
 .topbar-detail { padding-left: 7px; border-left: 1px solid rgba(255,255,255,.35); color: rgba(255,255,255,.78); font-weight: 500; }
+.topbar-ripple { width: 16px; height: 16px; display: inline-grid !important; flex: 0 0 16px; }
+.topbar-ripple svg { width: 16px; height: 16px; }
 .emergency-topbar-inner svg { color: #f0c177; }
 .emergency-topbar-inner a { color: white; text-decoration: underline; text-underline-offset: 2px; }
 .header-inner { height: 82px; display: flex; align-items: center; gap: 42px; }
@@ -75,6 +77,8 @@ img { display: block; max-width: 100%; }
 
 .button { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 0 21px; border: 1px solid transparent; border-radius: 5px; font-size: 13px; font-weight: 700; line-height: 1.15; cursor: pointer; transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease; }
 .button:hover { transform: translateY(-2px); }
+.button:active { transform: scale(.98); transition-duration: .15s; }
+.header-call:active, .mobile-sticky-cta a:active { transform: scale(.98); }
 .button-primary { color: white; background: var(--red); box-shadow: 0 5px 13px rgba(109,16,11,.16); }
 .button-primary:hover { background: var(--red-dark); box-shadow: 0 8px 18px rgba(109,16,11,.22); }
 .button-large { min-height: 54px; padding-inline: 23px; }
@@ -220,7 +224,9 @@ h1, h2, h3 { font-family: "Manrope", "DM Sans", sans-serif; }
 .service-card h3 { max-width: 260px; margin: 0 22px 8px 0; font-size: 16px; letter-spacing: -.035em; line-height: 1.35; }
 .service-card p { max-width: 300px; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
 .service-card > a { position: absolute; right: 20px; bottom: 17px; display: grid; place-items: center; width: 29px; height: 29px; border-radius: 50%; color: var(--red); background: #f7efec; transition: color .18s ease, background .18s ease; }
+.service-card > a svg { transition: transform .18s ease; }
 .service-card > a:hover { color: white; background: var(--red); }
+.service-card > a:hover svg { transform: translateX(4px); }
 .service-footnote { display: flex; align-items: center; gap: 12px; margin-top: 28px; padding: 17px 19px; border: 1px solid #e6e1d9; background: #faf8f4; }
 .service-footnote > svg { flex: 0 0 auto; color: var(--red); }
 .service-footnote p { flex: 1; margin: 0; color: var(--muted); font-size: 11px; }
@@ -270,6 +276,9 @@ h1, h2, h3 { font-family: "Manrope", "DM Sans", sans-serif; }
 .faq-aside .text-link { margin-top: 17px; }
 .faq-item { border-bottom: 1px solid var(--line); }
 .faq-item:first-child { border-top: 1px solid var(--line); }
+.faq-summary { width: 100%; display: grid; grid-template-columns: 39px 1fr 25px; align-items: center; gap: 13px; padding: 21px 2px; border: 0; color: inherit; background: transparent; cursor: pointer; text-align: left; font-family: "Manrope", sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -.03em; }
+.faq-summary[aria-expanded="true"] { color: var(--red); }
+.faq-summary[aria-expanded="true"] .faq-chevron { transform: rotate(45deg); }
 .faq-item summary { display: grid; grid-template-columns: 39px 1fr 25px; align-items: center; gap: 13px; padding: 21px 2px; cursor: pointer; list-style: none; font-family: "Manrope", sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -.03em; }
 .faq-item summary::-webkit-details-marker { display: none; }
 .faq-number { color: #aaa59d; font-family: "DM Sans", sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .09em; }
@@ -300,6 +309,8 @@ h1, h2, h3 { font-family: "Manrope", "DM Sans", sans-serif; }
 .form-message:not(:empty) { padding: 12px; border: 1px solid; }
 .form-message.success { border-color: #acd0b4; color: #17542d; background: #eff8f1; }
 .form-message.error { border-color: #e3b8b3; color: #8f1b13; background: #fcf1ef; }
+.form-message.success { display: grid; grid-template-columns: 40px 1fr; align-items: center; gap: 8px; }
+.form-success-lottie { width: 40px; height: 40px; display: block; }
 .contact-details { overflow: hidden; color: white; background: #282925; }
 .contact-details-top { padding: 30px 31px 24px; }
 .contact-details-top .eyebrow { color: #deb77f; }
@@ -532,4 +543,6 @@ h1, h2, h3 { font-family: "Manrope", "DM Sans", sans-serif; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .button:hover, .header-call:hover, .feature-card:hover, .text-link:hover svg { transform: none; }
+  .faq-chevron { transition: none; }
 }

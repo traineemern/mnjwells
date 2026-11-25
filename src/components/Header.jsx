@@ -1,7 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { site } from "../data/site.js";
 import { Icon } from "./Icons.jsx";
+import rippleAnimation from "../assets/lottie/ripple.json";
+import { useReducedMotion } from "../motion/useReducedMotion";
+const Lottie = lazy(() =>
+  import("lottie-react").then((module) => ({ default: module.LottieLight }))
+);
 
 const links = [
   { to: "/", label: "Home" },
@@ -16,6 +22,7 @@ export default function Header() {
   const triggerRef = useRef(null);
   const panelRef = useRef(null);
   const location = useLocation();
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     setOpen(false);
@@ -56,7 +63,14 @@ export default function Header() {
       <a className="skip-link" href="#main">Skip to content</a>
       <div className="emergency-topbar">
         <div className="page-wrap emergency-topbar-inner">
-          <span><Icon name="clock" size={14} /><strong>24/7 emergency service available</strong><span className="topbar-detail">Weekends &amp; holidays</span></span>
+          <span>
+            <span className="topbar-ripple" aria-hidden="true">
+              <Suspense fallback={<Icon name="clock" size={14} />}>
+                <Lottie src={rippleAnimation} loop={!reducedMotion} autoplay={!reducedMotion} />
+              </Suspense>
+            </span>
+            <strong>24/7 emergency service available</strong><span className="topbar-detail">Weekends &amp; holidays</span>
+          </span>
           <a href={site.phoneLink}>Call {site.phone}</a>
         </div>
       </div>
@@ -85,8 +99,21 @@ export default function Header() {
           <Icon name={open ? "close" : "menu"} size={23} />
         </button>
       </div>
-      {open && <button className="mobile-backdrop" type="button" aria-label="Close navigation" onClick={() => setOpen(false)} />}
-      <nav
+      <AnimatePresence>
+        {open && (
+          <motion.button
+            className="mobile-backdrop"
+            type="button"
+            aria-label="Close navigation"
+            onClick={() => setOpen(false)}
+            initial={reducedMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reducedMotion ? undefined : { opacity: 0 }}
+            transition={{ duration: reducedMotion ? 0 : 0.2 }}
+          />
+        )}
+      </AnimatePresence>
+      <motion.nav
         ref={panelRef}
         id="mobile-navigation"
         className={`mobile-nav${open ? " is-open" : ""}`}
@@ -94,6 +121,15 @@ export default function Header() {
         aria-modal={open ? "true" : undefined}
         role={open ? "dialog" : undefined}
         aria-hidden={!open}
+        initial={false}
+        animate={open ? { x: "0%", visibility: "visible" } : { x: "105%", visibility: "hidden" }}
+        transition={{ duration: reducedMotion ? 0 : 0.25, ease: [0.22, 1, 0.36, 1] }}
+        drag={reducedMotion ? false : "x"}
+        dragConstraints={{ left: 0, right: 160 }}
+        dragElastic={0.08}
+        onDragEnd={(_, info) => {
+          if (info.offset.x > 90) setOpen(false);
+        }}
       >
         <div className="mobile-nav-top">
           <strong>Explore</strong>
@@ -107,7 +143,7 @@ export default function Header() {
         <a className="button button-primary mobile-nav-cta" href={site.phoneLink}>
           <Icon name="phone" size={17} /> Call {site.phone}
         </a>
-      </nav>
+      </motion.nav>
     </header>
   );
 }

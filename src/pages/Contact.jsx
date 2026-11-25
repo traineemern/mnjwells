@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Link } from "react-router-dom";
 import { site, pageMeta } from "../data/site.js";
 import Seo from "../components/Seo.jsx";
 import { Icon } from "../components/Icons.jsx";
+import successAnimation from "../assets/lottie/success-check.json";
+const Lottie = lazy(() =>
+  import("lottie-react").then((module) => ({ default: module.LottieLight }))
+);
 
 const initialForm = {
   name: "",
@@ -113,7 +117,16 @@ export default function Contact() {
                 {submitting ? "Sending request…" : "Send estimate request"} <Icon name="arrowRight" size={18} />
               </button>
               <p className="form-privacy">Your information is only used to respond to your request.</p>
-              <div className={`form-message${status.type ? ` ${status.type}` : ""}`} role="status" aria-live="polite">{status.message}</div>
+              <div className={`form-message${status.type ? ` ${status.type}` : ""}`} role="status" aria-live="polite">
+                {status.type === "success" && (
+                  <span className="form-success-lottie" aria-hidden="true">
+                    <Suspense fallback={null}>
+                      <Lottie src={successAnimation} loop={false} autoplay />
+                    </Suspense>
+                  </span>
+                )}
+                {status.message}
+              </div>
             </form>
           </div>
           <aside className="contact-details">

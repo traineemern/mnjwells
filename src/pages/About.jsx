@@ -1,10 +1,32 @@
 import { Link } from "react-router-dom";
+import { useLayoutEffect, useRef } from "react";
 import { site, pageMeta } from "../data/site.js";
 import Seo from "../components/Seo.jsx";
 import CTA from "../components/CTA.jsx";
 import { Icon } from "../components/Icons.jsx";
 
 export default function About() {
+  const storyRef = useRef(null);
+
+  useLayoutEffect(() => {
+    let gsapContext;
+    let cancelled = false;
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([{ gsap }, { ScrollTrigger }]) => {
+      if (cancelled || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      gsap.registerPlugin(ScrollTrigger);
+      gsapContext = gsap.context(() => {
+        const sequence = gsap.timeline({
+          scrollTrigger: { trigger: storyRef.current, start: "top 68%", end: "bottom 58%", scrub: 0.6 },
+        });
+        sequence
+          .from(".about-sign", { opacity: 0, y: 24, duration: 0.8 })
+          .from(".about-copy .eyebrow, .about-copy h2", { opacity: 0, y: 16, duration: 0.7, stagger: 0.12 }, "-=0.45")
+          .from(".about-copy p, .about-copy .button", { opacity: 0, y: 12, duration: 0.6, stagger: 0.08 }, "-=0.35");
+      }, storyRef);
+    }).catch(() => {});
+    return () => { cancelled = true; gsapContext?.revert(); };
+  }, []);
+
   return (
     <>
       <Seo {...pageMeta.about} path="/about" />
@@ -16,7 +38,7 @@ export default function About() {
           <p>Local roots, practical experience, and a team that takes pride in serving our West Michigan community.</p>
         </div>
       </section>
-      <section className="about-story section-pad">
+      <section ref={storyRef} className="about-story section-pad">
         <div className="page-wrap about-story-grid">
           <div className="about-copy">
             <span className="eyebrow">A family-owned local business</span>
