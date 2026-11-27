@@ -147,8 +147,29 @@ function sampleRoute(progress01) {
 
 const townId = (town) => `town-${town.toLowerCase().replace(/\s+/g, "-")}`;
 
-export default function MichiganServiceMap() {
+export default function MichiganServiceMap({ compact = false }) {
   const truckRef = useRef(null);
+  const stageRef = useRef(null);
+
+  /* Animate pins once on scroll enter */
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage || typeof IntersectionObserver === "undefined") {
+      stage?.classList.add("is-in-view");
+      return undefined;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          stage.classList.add("is-in-view");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const truck = truckRef.current;
@@ -191,18 +212,20 @@ export default function MichiganServiceMap() {
   }, []);
 
   return (
-    <div className="michigan-map-stage">
-      <div className="page-wrap michigan-map-layout">
-        <div className="michigan-map-copy">
-          <span className="eyebrow">
-            <span className="eyebrow-dot" /> West Michigan coverage
-          </span>
-          <h2>
-            M &amp; J services<br />
-            <em>are available</em><br />
-            in Michigan.
-          </h2>
-        </div>
+    <div ref={stageRef} className="michigan-map-stage">
+      <div className={compact ? "michigan-map-layout" : "page-wrap michigan-map-layout"}>
+        {!compact ? (
+          <div className="michigan-map-copy">
+            <span className="eyebrow">
+              <span className="eyebrow-dot" /> West Michigan coverage
+            </span>
+            <h2>
+              M &amp; J services<br />
+              <em>are available</em><br />
+              in Michigan.
+            </h2>
+          </div>
+        ) : null}
 
         <div className="michigan-map-visual">
           <svg

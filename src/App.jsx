@@ -1,12 +1,13 @@
+import { lazy, Suspense, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { useEffect } from "react";
 import SiteLayout from "./components/SiteLayout.jsx";
 import Home from "./pages/Home.jsx";
-import Services from "./pages/Services.jsx";
-import About from "./pages/About.jsx";
-import FAQ from "./pages/FAQ.jsx";
-import Contact from "./pages/Contact.jsx";
-import NotFound from "./pages/NotFound.jsx";
+
+const Services = lazy(() => import("./pages/Services.jsx"));
+const About = lazy(() => import("./pages/About.jsx"));
+const FAQ = lazy(() => import("./pages/FAQ.jsx"));
+const Contact = lazy(() => import("./pages/Contact.jsx"));
+const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -22,17 +23,19 @@ export default function App() {
   return (
     <>
       <ScrollToTop />
-      <Routes>
-        <Route element={<SiteLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/404" element={<NotFound />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
+      <Suspense fallback={<div className="route-loading" aria-busy="true" />}>
+        <Routes>
+          <Route element={<SiteLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/404" element={<NotFound />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </>
   );
 }

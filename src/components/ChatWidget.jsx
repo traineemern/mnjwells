@@ -106,7 +106,7 @@ function matchDummyReply(text) {
   };
 }
 
-export default function ChatWidget() {
+function ChatWidgetInner() {
   const reducedMotion = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
   const [showTeaser, setShowTeaser] = useState(false);
@@ -380,7 +380,6 @@ export default function ChatWidget() {
         ) : null}
       </AnimatePresence>
 
-      {/* Floating circular trigger button with M&J Manager avatar */}
       <motion.button
         type="button"
         className={`chatbot-launcher${isOpen ? " is-open" : ""}`}
@@ -397,4 +396,9 @@ export default function ChatWidget() {
       </motion.button>
     </div>
   );
+}
+
+export default function ChatWidget() {
+  if (!import.meta.env.DEV) return null;
+  return <ChatWidgetInner />;
 }

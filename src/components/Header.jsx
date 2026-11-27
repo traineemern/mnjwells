@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { site } from "../data/site.js";
 import { Icon } from "./Icons.jsx";
-import { useReducedMotion } from "../motion/useReducedMotion";
-/* [NEW] Shared motion timing & easing tokens */
-import { motionConfig } from "../motion/config";
+import { trackEvent } from "../utils/analytics.js";
+import PictureAsset from "./PictureAsset.jsx";
 
 const links = [
   { to: "/", label: "Home" },
@@ -20,7 +18,6 @@ export default function Header() {
   const triggerRef = useRef(null);
   const panelRef = useRef(null);
   const location = useLocation();
-  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     setOpen(false);
@@ -29,8 +26,9 @@ export default function Header() {
   useEffect(() => {
     if (!open) return undefined;
     const panel = panelRef.current;
-    const focusable = panel.querySelectorAll('a[href], button:not([disabled])');
+    const focusable = panel ? panel.querySelectorAll('a[href], button:not([disabled])') : [];
     focusable[0]?.focus();
+
     const onKeyDown = (event) => {
       if (event.key === "Escape") {
         setOpen(false);
@@ -48,6 +46,7 @@ export default function Header() {
         }
       }
     };
+
     document.addEventListener("keydown", onKeyDown);
     document.body.classList.add("menu-open");
     return () => {
@@ -61,17 +60,47 @@ export default function Header() {
       <a className="skip-link" href="#main">Skip to content</a>
       <div className="header-inner page-wrap">
         <Link className="brand" to="/" aria-label="M&J Water Wells home">
-          <img className="brand-logo-image" src="/images/logo.png" alt="M&J Water Wells" width="204" height="105" />
+          <PictureAsset
+            base="logo"
+            alt={site.name}
+            width={204}
+            height={105}
+            loading="eager"
+            className="brand-logo-image"
+          />
         </Link>
+
         <nav className="desktop-nav" aria-label="Main navigation">
           {links.map(({ to, label }) => (
-            <NavLink key={to} to={to} className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>{label}</NavLink>
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
+            >
+              {label}
+            </NavLink>
           ))}
         </nav>
-        <a className="header-call" href={site.phoneLink}>
-          <Icon name="phone" size={17} />
-          <span>Call {site.phone}</span>
-        </a>
+
+        <div className="header-actions">
+          <a
+            className="header-call"
+            href={site.phoneLink}
+            onClick={() => trackEvent("click_to_call", { source: "header" })}
+          >
+            <Icon name="phone" size={16} />
+            <span>{site.phone}</span>
+          </a>
+          <Link
+            className="header-cta"
+            to="/contact"
+            onClick={() => trackEvent("quote_click", { source: "header" })}
+          >
+            <span>Get a Free Quote</span>
+            <Icon name="arrowRight" size={15} />
+          </Link>
+        </div>
+
         <button
           ref={triggerRef}
           className="menu-toggle"
@@ -84,21 +113,17 @@ export default function Header() {
           <Icon name={open ? "close" : "menu"} size={23} />
         </button>
       </div>
-      <AnimatePresence>
-        {open && (
-          <motion.button
-            className="mobile-backdrop"
-            type="button"
-            aria-label="Close navigation"
-            onClick={() => setOpen(false)}
-            initial={reducedMotion ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={reducedMotion ? undefined : { opacity: 0 }}
-            transition={{ duration: reducedMotion ? 0 : 0.2 }}
-          />
-        )}
-      </AnimatePresence>
-      <motion.nav
+
+      {open ? (
+        <button
+          className="mobile-backdrop"
+          type="button"
+          aria-label="Close navigation"
+          onClick={() => setOpen(false)}
+        />
+      ) : null}
+
+      <nav
         ref={panelRef}
         id="mobile-navigation"
         className={`mobile-nav${open ? " is-open" : ""}`}
@@ -106,29 +131,36 @@ export default function Header() {
         aria-modal={open ? "true" : undefined}
         role={open ? "dialog" : undefined}
         aria-hidden={!open}
-        initial={false}
-        animate={open ? { x: "0%", visibility: "visible" } : { x: "105%", visibility: "hidden" }}
-        transition={{ duration: reducedMotion ? 0 : motionConfig.duration.ui, ease: motionConfig.ease }}
-        drag={reducedMotion ? false : "x"}
-        dragConstraints={{ left: 0, right: 160 }}
-        dragElastic={0.08}
-        onDragEnd={(_, info) => {
-          if (info.offset.x > 90) setOpen(false);
-        }}
       >
         <div className="mobile-nav-top">
           <strong>Explore</strong>
-          <button type="button" className="icon-button" aria-label="Close navigation menu" onClick={() => setOpen(false)}>
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Close navigation menu"
+            onClick={() => setOpen(false)}
+          >
             <Icon name="close" />
           </button>
         </div>
         {links.map(({ to, label }) => (
-          <NavLink key={to} to={to} className={({ isActive }) => isActive ? "mobile-nav-link active" : "mobile-nav-link"}>{label}<Icon name="arrowRight" size={18} /></NavLink>
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) => (isActive ? "mobile-nav-link active" : "mobile-nav-link")}
+          >
+            {label}
+            <Icon name="arrowRight" size={18} />
+          </NavLink>
         ))}
-        <a className="button button-primary mobile-nav-cta" href={site.phoneLink}>
+        <a
+          className="button button-primary mobile-nav-cta"
+          href={site.phoneLink}
+          onClick={() => trackEvent("click_to_call", { source: "mobile_menu" })}
+        >
           <Icon name="phone" size={17} /> Call {site.phone}
         </a>
-      </motion.nav>
+      </nav>
     </header>
   );
 }

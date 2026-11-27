@@ -1,13 +1,12 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { Link } from "react-router-dom";
 import { site, pageMeta } from "../data/site.js";
 import Seo from "../components/Seo.jsx";
 import CTA from "../components/CTA.jsx";
 import { Icon } from "../components/Icons.jsx";
-import { useReducedMotion } from "../motion/useReducedMotion";
-import { motionConfig } from "../motion/config";
 import MaskedHeading from "../components/MaskedHeading.jsx";
+import { DevBadge } from "../components/GuardContent.jsx";
+import { trackEvent } from "../utils/analytics.js";
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -20,90 +19,124 @@ const faqSchema = {
 };
 
 export default function FAQ() {
-  const reducedMotion = useReducedMotion();
-  const [openIndex, setOpenIndex] = useState(0);
+  const [openIndex, setOpenIndex] = useState(-1);
 
   return (
     <>
-      <Seo {...pageMeta.faq} path="/faq" schema={faqSchema} />
-      <section className="page-hero faq-hero">
-        <div className="page-wrap page-hero-inner">
-          <div className="breadcrumb" data-hero-item="" style={{ "--hero-index": 0 }}><Link to="/">Home</Link><span>/</span><span>FAQs</span></div>
-          <span className="eyebrow eyebrow-light" data-hero-item="" style={{ "--hero-index": 1 }}>A few things you might be wondering</span>
-          <MaskedHeading
-            lines={[
-              [{ text: "Good questions." }],
-              [{ text: "Straight answers." }],
-            ]}
-          />
-          <p data-hero-item="" style={{ "--hero-index": 2 }}>Here are answers to some common well drilling and water system questions.</p>
-        </div>
-      </section>
-      {/* [UPDATED] FAQ layout styled after reference: left header + rounded call card, right stacked rounded accordion cards */}
-      <section className="faq-section section-pad">
-        <div className="page-wrap faq-layout">
-          <div className="faq-sidebar" data-reveal="">
-            <div className="faq-sidebar-head">
-              <span className="eyebrow"><span className="eyebrow-dot" /> FAQs</span>
-              <h2>Frequently Asked Questions</h2>
+      <Seo
+        {...pageMeta.faq}
+        path="/faq"
+        ogImage={pageMeta.faq.ogImage}
+        breadcrumbLabel="FAQs"
+        schema={faqSchema}
+      />
+
+      <section className="faq-open-section">
+        <div className="page-wrap">
+          <div className="faq-open-head">
+            <div className="breadcrumb-dark" data-hero-item="" style={{ "--hero-index": 0 }}>
+              <Link to="/">Home</Link>
+              <span>/</span>
+              <span>FAQs</span>
             </div>
-            <aside className="faq-aside">
-              <div className="faq-aside-avatar" aria-hidden="true">
-                <Icon name="phone" size={24} />
-              </div>
-              <h3>We&apos;re happy to help.</h3>
-              <p>Every property and water system is different. If you have a question that isn&apos;t covered here, talk to our team.</p>
-              <a className="button button-primary button-pill" href={site.phoneLink}>
-                <Icon name="phone" size={17} />Call {site.phone}
-              </a>
-              <Link to="/contact" className="text-link">Send us a message <Icon name="arrowRight" size={16} /></Link>
-            </aside>
+            <span className="eyebrow" data-hero-item="" style={{ "--hero-index": 1 }}>
+              <span className="eyebrow-dot" /> Straightforward answers
+            </span>
+            <MaskedHeading lines={[[{ text: "Questions & Answers" }]]} />
           </div>
-          <div className="faq-list" data-reveal-stagger="">
+
+          <div className="faq-open-list">
             {site.faqs.map((faq, index) => {
               const isOpen = openIndex === index;
+              const panelId = `faq-panel-${index}`;
               return (
-                <article
-                  className={`faq-item${isOpen ? " is-open" : ""}`}
-                  key={faq.question}
-                  data-reveal-item=""
-                >
+                <div className="faq-open-row" key={faq.question}>
                   <button
-                    className="faq-summary"
+                    className="faq-open-summary"
                     type="button"
                     aria-expanded={isOpen}
+                    aria-controls={panelId}
                     onClick={() => setOpenIndex(isOpen ? -1 : index)}
                   >
-                    <span className="faq-question-text">{faq.question}</span>
-                    <motion.span
-                      className="faq-toggle-icon"
-                      aria-hidden="true"
-                      animate={reducedMotion ? undefined : { rotate: isOpen ? 45 : 0 }}
-                      transition={{ duration: motionConfig.duration.fast, ease: motionConfig.ease }}
-                    >
-                      <Icon name="plus" size={18} />
-                    </motion.span>
+                    <span>
+                      {faq.question}
+                      <DevBadge tag={faq.tag} />
+                    </span>
+                    <span className={`faq-plus-icon${isOpen ? " is-open" : ""}`} aria-hidden="true">
+                      <Icon name="plus" size={20} />
+                    </span>
                   </button>
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        className="faq-answer"
-                        initial={reducedMotion ? false : { height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={reducedMotion ? undefined : { height: 0, opacity: 0 }}
-                        transition={{ duration: reducedMotion ? 0 : motionConfig.duration.ui, ease: motionConfig.ease }}
-                      >
-                        <p>{faq.answer}</p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </article>
+
+                  <div id={panelId} className="faq-open-answer" hidden={!isOpen}>
+                    <p>{faq.answer}</p>
+                  </div>
+                </div>
               );
             })}
           </div>
+
+          {/* Open contact details placed directly below final FAQ item */}
+          <div className="faq-open-contact" aria-label="Contact details">
+            <div>
+              <span className="eyebrow">
+                <span className="eyebrow-dot" /> Contact details
+              </span>
+              <h2>Still have a question?</h2>
+              <p>Reach our Newaygo office directly or open the estimate request form.</p>
+              <Link
+                className="text-link"
+                to="/contact"
+                onClick={() => trackEvent("quote_click", { source: "faq_contact" })}
+              >
+                Open the estimate request form <Icon name="arrowRight" size={16} />
+              </Link>
+            </div>
+
+            <div className="faq-contact-grid">
+              <div className="faq-contact-item">
+                <small>Phone</small>
+                <a
+                  href={site.phoneLink}
+                  onClick={() => trackEvent("click_to_call", { source: "faq_contact_block" })}
+                >
+                  {site.phone}
+                </a>
+              </div>
+              <div className="faq-contact-item">
+                <small>Email</small>
+                <a href={`mailto:${site.email}`}>{site.email}</a>
+              </div>
+              <div className="faq-contact-item">
+                <small>
+                  Address <DevBadge tag="verify" />
+                </small>
+                <p>
+                  {site.address.street}
+                  <br />
+                  {site.address.city}, {site.address.region} {site.address.postalCode}
+                </p>
+              </div>
+              <div className="faq-contact-item">
+                <small>
+                  Business Hours <DevBadge tag="verify" />
+                </small>
+                <p>
+                  {site.businessHours}
+                  <br />
+                  {site.emergencyHours}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
-      <CTA compact eyebrow="Still have a question?" title="Talk through your situation." description="Every property and water system is different, so get a direct answer from our team." />
+
+      <CTA
+        compact
+        eyebrow="Get in touch"
+        title="Need help with a well project?"
+        description="Call our Newaygo office directly or send project details online."
+      />
     </>
   );
 }

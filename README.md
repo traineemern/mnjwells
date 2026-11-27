@@ -39,6 +39,20 @@ npm run preview
 
 The production files are written to `dist/`.
 
+## Content Integrity & Analytics
+
+### Content Tag Guard (`npm run check:content`)
+`src/data/site.js` annotates entries with `legacy`, `verify`, or `dummy` tags. Placeholder `dummy` sections (`WellProcessSection`, `ProjectsFilmstrip`, and dev-mode `ChatWidget`) render with visible dev badges only in development and are prevented from shipping unconfirmed into production. Run `npm run check:content` (or `node scripts/check-content.mjs --strict` pre-launch) to verify no unguarded `dummy` content renders in production builds.
+
+### Privacy-Respecting Analytics (`src/utils/analytics.js`)
+The site dispatches cookieless `mj:analytics` DOM `CustomEvent` records (and optionally forwards to `window.plausible` if configured) for:
+- `click_to_call` (all `tel:` triggers)
+- `quote_click` (`Get a Free Quote` / inquiry navigation)
+- `form_start` (first input focus on Contact form)
+- `form_submit` (Contact form submission attempts)
+
+No third-party tracking cookies are set and no cookie consent banner is needed.
+
 ## Contact form setup
 
 The estimate form uses Formspree for hosted submission and server-side validation. The browser also validates required fields, email format, phone pattern, and minimum lengths before submission. A honeypot field is included as basic spam protection.

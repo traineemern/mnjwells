@@ -3,69 +3,149 @@ import { site, pageMeta } from "../data/site.js";
 import Seo from "../components/Seo.jsx";
 import CTA from "../components/CTA.jsx";
 import { Icon } from "../components/Icons.jsx";
-/* [NEW] Masked-baseline word reveal & 3D circular customer reviews carousel */
 import MaskedHeading from "../components/MaskedHeading.jsx";
-import Reviews3DCarousel from "../components/Reviews3DCarousel.jsx";
+import PictureAsset from "../components/PictureAsset.jsx";
+import { DevBadge } from "../components/GuardContent.jsx";
+import { trackEvent } from "../utils/analytics.js";
 
 export default function About() {
   return (
     <>
-      <Seo {...pageMeta.about} path="/about" />
-      <section className="page-hero about-hero">
-        <div className="page-wrap page-hero-inner">
-          <div className="breadcrumb" data-hero-item="" style={{ "--hero-index": 0 }}><Link to="/">Home</Link><span>/</span><span>About us</span></div>
-          <span className="eyebrow eyebrow-light" data-hero-item="" style={{ "--hero-index": 1 }}>Neighbors helping neighbors</span>
-          {/* [UPDATED] Masked-baseline word reveal on hero headline */}
-          <MaskedHeading
-            lines={[
-              [{ text: "Good work runs" }],
-              [{ text: "in the family." }],
-            ]}
+      <Seo
+        {...pageMeta.about}
+        path="/about"
+        ogImage={pageMeta.about.ogImage}
+        breadcrumbLabel="About"
+      />
+
+      {/* Editorial opening */}
+      <header className="about-editorial-hero">
+        <div className="page-wrap">
+          <div className="breadcrumb-dark" data-hero-item="" style={{ "--hero-index": 0 }}>
+            <Link to="/">Home</Link>
+            <span>/</span>
+            <span>About</span>
+          </div>
+          <span className="eyebrow" data-hero-item="" style={{ "--hero-index": 1 }}>
+            <span className="eyebrow-dot" /> Neighbors helping neighbors
+          </span>
+          <MaskedHeading lines={[[{ text: "Good work runs in the family." }]]} />
+          <p className="about-editorial-lead" data-hero-item="" style={{ "--hero-index": 2 }}>
+            M&amp;J Water Wells is a family-owned and operated contractor in Newaygo, Michigan—led by {site.owners[0]} and {site.owners[1]}<DevBadge tag="verify" /> and built on straightforward local service.
+          </p>
+        </div>
+      </header>
+
+      {/* Full-height edge-bleed split with company sign */}
+      <section className="edge-split" aria-label="Our family story">
+        <div className="edge-split-media" data-reveal="">
+          <PictureAsset
+            base="company-sign"
+            alt={site.altText.sign}
+            width={445}
+            height={300}
+            loading="lazy"
           />
-          <p data-hero-item="" style={{ "--hero-index": 2 }}>Local roots, practical experience, and a team that takes pride in serving our West Michigan community.</p>
+          <span className="edge-media-caption">1038 STANTON AVE · NEWAYGO, MI</span>
         </div>
-      </section>
-      <section className="about-story section-pad">
-        <div className="page-wrap about-story-grid">
-          {/* [UPDATED] One-shot IntersectionObserver scroll reveal */}
-          <div className="about-copy" data-reveal="">
-            <span className="eyebrow">A family-owned local business</span>
-            <h2>More than a well.<br /><span>A relationship you can trust.</span></h2>
-            <p className="lead">M&amp;J Water Wells is a family-owned and operated business in Newaygo, Michigan.</p>
-            <p>Owners {site.owners[0]} and {site.owners[1]} and their team are committed to serving the community and take pride in the work they do. From a new residential well to a larger commercial or agricultural project, we bring the right equipment and a straightforward, personal approach.</p>
-            <p>We work with wells from 2 inches up to 10 inches and have the ability to drill or replace wells up to 12 inches, depending on the project.</p>
-            <a className="button button-primary" href={site.phoneLink}><Icon name="phone" size={17} />Call {site.phone}</a>
+
+        <div className="edge-split-body" data-reveal="">
+          <span className="eyebrow">
+            <span className="eyebrow-dot" /> A family-owned business
+          </span>
+          <h2>
+            More than a well.<br />
+            <span>A relationship you can trust.</span>
+          </h2>
+          <p className="lead">
+            {site.owners[0]} and {site.owners[1]} and their crew are committed to serving Newaygo and surrounding West Michigan communities with care.
+          </p>
+          <p>
+            From residential domestic wells to commercial and agricultural projects, we work with wells from 2 inches to 10 inches and can drill or replace wells up to 12 inches depending on project requirements<DevBadge tag="verify" />.
+          </p>
+
+          <div className="split-cta-row">
+            <a
+              className="button button-primary"
+              href={site.phoneLink}
+              onClick={() => trackEvent("click_to_call", { source: "about_story" })}
+            >
+              <Icon name="phone" size={17} /> Call {site.phone}
+            </a>
+            <Link
+              to="/contact"
+              className="text-link"
+              onClick={() => trackEvent("quote_click", { source: "about_story" })}
+            >
+              Get a Free Quote <Icon name="arrowRight" size={16} />
+            </Link>
           </div>
-          <figure className="about-sign" data-reveal="">
-            <img src="/images/company-sign.png" alt="M&J Water Wells roadside sign in Newaygo, Michigan" width="445" height="300" loading="lazy" />
-            <figcaption><span>Serving Newaygo &amp; West Michigan</span><small>A local business, right here at home.</small></figcaption>
-          </figure>
         </div>
       </section>
-      {/* [NEW] 3D auto-cycling circular customer reviews carousel */}
-      <Reviews3DCarousel />
-      <section className="about-base">
-        <div className="page-wrap about-base-grid">
-          <div className="about-base-photo" data-reveal="">
-            <img src="/images/warehouse.png" alt="M&J Water Wells property and warehouse in Newaygo" width="872" height="436" loading="lazy" />
-            <span>Our home base in Newaygo</span>
+
+      {/* Two-column prose commitments + edge-bleed warehouse split */}
+      <section className="edge-split is-reversed is-soft" aria-label="Our commitments">
+        <div className="edge-split-media" data-reveal="">
+          <PictureAsset
+            base="warehouse"
+            alt={site.altText.warehouse}
+            width={872}
+            height={436}
+            loading="lazy"
+          />
+          <span className="edge-media-caption">M&amp;J YARD &amp; HOME BASE · NEWAYGO</span>
+        </div>
+
+        <div className="edge-split-body" data-reveal="">
+          <span className="eyebrow">
+            <span className="eyebrow-dot" /> Commitments
+          </span>
+          <h2>Straightforward work from the first call forward.</h2>
+
+          <div className="two-col-open-values">
+            <div className="open-value-col">
+              <strong>
+                Equipment &amp; range <DevBadge tag="verify" />
+              </strong>
+              <p>
+                Outfitted in Newaygo for 2&quot;–10&quot; well work and up to 12&quot; replacement or large-capacity installations across homes, farms, and businesses.
+              </p>
+            </div>
+            <div className="open-value-col">
+              <strong>
+                Weekend &amp; holiday help <DevBadge tag="verify" />
+              </strong>
+              <p>
+                {site.emergencyHours}. If we cannot answer while on a rig, leave a message and we will return your call promptly.
+              </p>
+            </div>
           </div>
-          <div className="about-base-copy" data-reveal="">
-            <span className="eyebrow">Ready for the work</span>
-            <h2>Set up for the jobs that matter.</h2>
-            <p>Our equipment is ready for residential, commercial, and agricultural water needs. When a project calls for a bigger setup, we'll talk through the site and what it takes before work begins.</p>
-            <div className="capacity-note"><strong>2&quot;–10&quot;</strong><span>Well drilling range<br />with up to 12&quot; drilling or replacement capability</span></div>
-          </div>
         </div>
       </section>
-      <section className="emergency-section">
-        <div className="page-wrap emergency-inner" data-reveal="">
-          <div className="emergency-icon"><Icon name="headset" size={26} /></div>
-          <div><span className="eyebrow eyebrow-light">Help beyond the work week</span><h2>Need help on a weekend or holiday?</h2><p>{site.emergencyHours}. If we can't answer, leave a message and we'll return your call promptly.</p></div>
-          <a className="button button-white" href={site.phoneLink}><Icon name="phone" size={17} />Call {site.phone}</a>
+
+      {/* Service area as clean text list */}
+      <section className="about-towns-band" aria-label="Service areas">
+        <div className="page-wrap" data-reveal="">
+          <span className="eyebrow">
+            <span className="eyebrow-dot" /> Service area
+            <DevBadge tag={site.serviceAreas.tag} />
+          </span>
+          <h2>Communities across West Michigan.</h2>
+          <p className="county-copy">
+            <strong>Towns:</strong> {site.serviceAreas.towns.join(" · ")}
+          </p>
+          <p className="county-copy">
+            <strong>Counties:</strong> {site.serviceAreas.counties.map((c) => `${c} County`).join(" · ")}
+          </p>
         </div>
       </section>
-      <CTA compact eyebrow="Local help, personal service" title="Let’s keep your water flowing." description="Contact our Newaygo team about well drilling or water system service." />
+
+      <CTA
+        compact
+        eyebrow="Local help, personal service"
+        title="Let's keep your water flowing."
+        description="Contact our Newaygo team about well drilling or water system service."
+      />
     </>
   );
 }
