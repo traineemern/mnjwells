@@ -308,6 +308,167 @@ h1, h2, h3 {
 .reviews-inner .button { flex: 0 0 auto; }
 .reviews-copy h2 { max-width: 620px; }
 
+/* [UPDATED] Isometric 3D diorama 4-step horizontal flow matching reference composition */
+.process-section {
+  overflow: hidden;
+  padding-block: clamp(54px, 6.5vw, 84px);
+  background: var(--paper);
+}
+.process-header {
+  text-align: center;
+  margin-bottom: clamp(32px, 4vw, 48px);
+}
+.process-header .eyebrow {
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.process-header h2 {
+  margin: 0;
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+}
+.process-flow-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr) 26px minmax(0, 1fr) 26px minmax(0, 1fr);
+  align-items: end;
+  gap: 8px;
+}
+.process-step-item {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  outline: none;
+  cursor: default;
+}
+.process-step-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.process-num-badge {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: #d61b1b;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: var(--weight-bold);
+  box-shadow: 0 4px 12px rgba(214, 27, 27, 0.24);
+  transition: transform 280ms var(--ease-ui), background-color 280ms var(--ease-ui), box-shadow 280ms var(--ease-ui);
+}
+.process-step-item.is-current .process-num-badge {
+  background: var(--red);
+  transform: scale(1.1);
+  box-shadow: 0 0 0 6px rgba(214, 27, 27, 0.12), 0 8px 18px rgba(161, 26, 18, 0.28);
+}
+.process-step-top h3 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(16px, 1.35vw, 19px);
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.process-diorama-stage {
+  position: relative;
+  width: 100%;
+  height: clamp(205px, 21vw, 255px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 12px;
+  perspective: 900px;
+}
+.process-pink-halo {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  width: min(80%, 212px);
+  aspect-ratio: 1;
+  transform: translateX(-50%) scale(0.96);
+  border-radius: 50%;
+  background: rgba(214, 27, 27, 0.085);
+  pointer-events: none;
+  transition: transform 380ms var(--ease-ui), background-color 380ms var(--ease-ui);
+}
+.process-step-item.is-current .process-pink-halo,
+.process-step-item:hover .process-pink-halo {
+  transform: translateX(-50%) scale(1.03);
+  background: rgba(214, 27, 27, 0.12);
+}
+.process-ground-shadow {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 78%;
+  height: 22px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(24, 18, 15, 0.2) 0%, rgba(24, 18, 15, 0.07) 52%, transparent 74%);
+  pointer-events: none;
+  transition: transform 320ms var(--ease-ui), opacity 320ms var(--ease-ui);
+}
+.process-diorama-img {
+  position: relative;
+  z-index: 1;
+  width: 96%;
+  max-width: 245px;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  user-select: none;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(0);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.process-diorama-img.is-step-1 { width: 95%; max-width: 242px; }
+.process-diorama-img.is-step-2 { width: 92%; max-width: 236px; }
+.process-diorama-img.is-step-3 { width: 93%; max-width: 238px; }
+.process-diorama-img.is-step-4 { width: 97%; max-width: 246px; }
+.process-step-item.is-current .process-diorama-img,
+.process-step-item:hover .process-diorama-img {
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-5px) scale(1.02);
+}
+.process-step-item.is-current .process-ground-shadow,
+.process-step-item:hover .process-ground-shadow {
+  transform: translateX(-50%) scale(0.93);
+  opacity: 0.72;
+}
+.process-step-caption {
+  max-width: 230px;
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.process-arrow-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  padding-top: 28px;
+  color: #a9a298;
+  transition: color 280ms var(--ease-ui), transform 280ms var(--ease-ui);
+}
+.process-arrow-col.is-active {
+  color: var(--red);
+  transform: translateX(3px);
+}
+
 .trust-section { padding-block: 49px; color: white; background: #252624; }
 .trust-inner { display: grid; grid-template-columns: 1.15fr 1.8fr 1fr; align-items: center; gap: 36px; }
 .trust-title .eyebrow { color: #d7a665; }
@@ -1028,6 +1189,9 @@ h1, h2, h3 {
   .intro-copy { max-width: 650px; }
   .feature-grid { grid-template-columns: repeat(2, 1fr); }
   .feature-card:last-child { grid-column: 1 / -1; min-height: 260px; }
+  .process-flow-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 24px; }
+  .process-arrow-col { display: none; }
+  .process-diorama-stage { height: 220px; }
   .trust-inner { grid-template-columns: 1fr 1fr; }
   .trust-title { grid-column: 1 / -1; }
   .payment-list { grid-column: auto; grid-row: auto; }
@@ -1108,6 +1272,8 @@ h1, h2, h3 {
   .cta-inner { align-items: flex-start; flex-direction: column; gap: 20px; }
   .cta-actions { width: 100%; align-items: stretch; flex-direction: column; }
   .cta-actions .button { justify-content: center; }
+  .process-flow-grid { grid-template-columns: 1fr; gap: 38px; }
+  .process-diorama-stage { height: 225px; }
   .page-hero { min-height: 390px; }
   .page-hero-inner { padding-block: 32px 48px; }
   .breadcrumb { margin-bottom: 31px; }
@@ -1196,6 +1362,8 @@ h1, h2, h3 {
     letter-spacing: var(--tracking-tight) !important;
   }
   .faq-chevron { transition: none !important; }
+  .process-step-item.is-current .process-diorama-img,
+  .process-step-item:hover .process-diorama-img { transform: none !important; }
   .mi-pin-pulse { animation: none !important; opacity: 0.35; }
   ::view-transition-old(root),
   ::view-transition-new(root) {

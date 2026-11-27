@@ -8,8 +8,9 @@ import { Icon } from "../components/Icons.jsx";
 /* [NEW] Masked-baseline word reveal & lazy GSAP ScrollTrigger hero parallax */
 import MaskedHeading from "../components/MaskedHeading.jsx";
 import { initHeroParallax } from "../motion/reveal.js";
-/* [NEW] Standalone animated Michigan service-area map */
+/* [NEW] Standalone animated Michigan service-area map & 4-step 3D horizontal process */
 import MichiganServiceMap from "../components/MichiganServiceMap.jsx";
+import WellProcessSection from "../components/WellProcessSection.jsx";
 
 const businessSchema = {
   "@context": "https://schema.org",
@@ -131,6 +132,9 @@ export default function Home() {
           </a>
         </div>
       </section>
+
+      {/* [NEW] Scroll-driven horizontal 4-step well process with interactive 3D models */}
+      <WellProcessSection />
 
       <section className="trust-section">
         <div className="page-wrap trust-inner" data-reveal="">
