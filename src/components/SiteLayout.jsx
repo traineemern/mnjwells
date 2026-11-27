@@ -6,6 +6,7 @@ import { motionConfig } from "../motion/config";
 import PageTransition from "../motion/PageTransition";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
+import ChatWidget from "./ChatWidget.jsx";
 import { site } from "../data/site.js";
 import { Icon } from "./Icons.jsx";
 /* [NEW] View Transitions API helper for smooth anchor navigation */
@@ -76,6 +77,7 @@ export default function SiteLayout() {
         <a className="mobile-sticky-call" href={site.phoneLink} tabIndex={showMobileBar ? 0 : -1}><Icon name="phone" size={18} />Call</a>
         <Link className="mobile-sticky-estimate" to="/contact" tabIndex={showMobileBar ? 0 : -1}><Icon name="arrowRight" size={18} />Free estimate</Link>
       </motion.div>
+      <ChatWidget />
     </div>
   );
 }
