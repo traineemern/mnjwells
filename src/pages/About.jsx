@@ -3,8 +3,9 @@ import { site, pageMeta } from "../data/site.js";
 import Seo from "../components/Seo.jsx";
 import CTA from "../components/CTA.jsx";
 import { Icon } from "../components/Icons.jsx";
-/* [NEW] Masked-baseline word reveal for hero heading */
+/* [NEW] Masked-baseline word reveal & 3D circular customer reviews carousel */
 import MaskedHeading from "../components/MaskedHeading.jsx";
+import Reviews3DCarousel from "../components/Reviews3DCarousel.jsx";
 
 export default function About() {
   return (
@@ -41,6 +42,8 @@ export default function About() {
           </figure>
         </div>
       </section>
+      {/* [NEW] 3D auto-cycling circular customer reviews carousel */}
+      <Reviews3DCarousel />
       <section className="about-base">
         <div className="page-wrap about-base-grid">
           <div className="about-base-photo" data-reveal="">

@@ -1,5 +1,6 @@
 import {
   ArrowDown,
+  ArrowLeft,
   ArrowRight,
   Check,
   ChevronDown,
@@ -13,9 +14,11 @@ import {
   MapPin,
   Menu,
   Phone,
+  Plus,
   RefreshCw,
   ShieldCheck,
   Sparkles,
+  Star,
   Wrench,
   X,
   ClipboardCheck,
@@ -25,6 +28,7 @@ import {
 
 export const iconMap = {
   arrowDown: ArrowDown,
+  arrowLeft: ArrowLeft,
   arrowRight: ArrowRight,
   check: Check,
   chevronDown: ChevronDown,
@@ -38,9 +42,11 @@ export const iconMap = {
   mapPin: MapPin,
   menu: Menu,
   phone: Phone,
+  plus: Plus,
   refresh: RefreshCw,
   shield: ShieldCheck,
   sparkles: Sparkles,
+  star: Star,
   wrench: Wrench,
   close: X,
   clipboard: ClipboardCheck,

@@ -1,26 +1,22 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useReducedMotion } from "../motion/useReducedMotion";
 import { motionConfig } from "../motion/config";
+import PageTransition from "../motion/PageTransition";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import { site } from "../data/site.js";
 import { Icon } from "./Icons.jsx";
-/* [NEW] Vanilla JS IntersectionObserver & View Transitions helper */
-import { initRevealObserver, runViewTransition } from "../motion/reveal.js";
+/* [NEW] View Transitions API helper for smooth anchor navigation */
+import { runViewTransition } from "../motion/reveal.js";
 
 export default function SiteLayout() {
   const { pathname } = useLocation();
   const reducedMotion = useReducedMotion();
   const [showMobileBar, setShowMobileBar] = useState(false);
 
-  /* [NEW] Initialize one-shot scroll reveals on route navigation */
-  useEffect(() => {
-    return initRevealObserver(document);
-  }, [pathname]);
-
-  /* [NEW] Smooth anchor transitions via View Transitions API with graceful fallback */
+  /* [NEW] Smooth anchor transitions via View Transitions API with fallback */
   useEffect(() => {
     const onHashClick = (event) => {
       const link = event.target.closest('a[href^="#"]');
@@ -61,10 +57,12 @@ export default function SiteLayout() {
     <div id="top" className="site-shell">
       <Header />
       <main id="main">
-        {/* [UPDATED] CSS fade stage fallback for route transitions */}
-        <div key={pathname} className="page-transition-stage">
-          <Outlet />
-        </div>
+        {/* [UPDATED] Motion AnimatePresence route transitions + PageTransition GSAP ScrollTrigger lifecycle */}
+        <AnimatePresence mode="wait" initial={false}>
+          <PageTransition key={pathname}>
+            <Outlet />
+          </PageTransition>
+        </AnimatePresence>
       </main>
       <Footer />
       <motion.div

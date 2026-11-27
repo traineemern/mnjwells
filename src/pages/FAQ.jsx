@@ -7,7 +7,6 @@ import CTA from "../components/CTA.jsx";
 import { Icon } from "../components/Icons.jsx";
 import { useReducedMotion } from "../motion/useReducedMotion";
 import { motionConfig } from "../motion/config";
-/* [NEW] Masked-baseline word reveal for hero heading */
 import MaskedHeading from "../components/MaskedHeading.jsx";
 
 const faqSchema = {
@@ -31,7 +30,6 @@ export default function FAQ() {
         <div className="page-wrap page-hero-inner">
           <div className="breadcrumb" data-hero-item="" style={{ "--hero-index": 0 }}><Link to="/">Home</Link><span>/</span><span>FAQs</span></div>
           <span className="eyebrow eyebrow-light" data-hero-item="" style={{ "--hero-index": 1 }}>A few things you might be wondering</span>
-          {/* [UPDATED] Masked-baseline word reveal on hero headline */}
           <MaskedHeading
             lines={[
               [{ text: "Good questions." }],
@@ -41,44 +39,67 @@ export default function FAQ() {
           <p data-hero-item="" style={{ "--hero-index": 2 }}>Here are answers to some common well drilling and water system questions.</p>
         </div>
       </section>
+      {/* [UPDATED] FAQ layout styled after reference: left header + rounded call card, right stacked rounded accordion cards */}
       <section className="faq-section section-pad">
         <div className="page-wrap faq-layout">
-          <aside className="faq-aside" data-reveal="">
-            <span className="eyebrow">Need a hand?</span>
-            <h2>We&apos;re happy to help.</h2>
-            <p>Every property and water system is different. If you have a question that isn't covered here, talk to our team.</p>
-            <a className="button button-primary" href={site.phoneLink}><Icon name="phone" size={17} />{site.phone}</a>
-            <Link to="/contact" className="text-link">Send us a message <Icon name="arrowRight" size={16} /></Link>
-          </aside>
-          {/* [UPDATED] Staggered IntersectionObserver reveal on FAQ items */}
+          <div className="faq-sidebar" data-reveal="">
+            <div className="faq-sidebar-head">
+              <span className="eyebrow"><span className="eyebrow-dot" /> FAQs</span>
+              <h2>Frequently Asked Questions</h2>
+            </div>
+            <aside className="faq-aside">
+              <div className="faq-aside-avatar" aria-hidden="true">
+                <Icon name="phone" size={24} />
+              </div>
+              <h3>We&apos;re happy to help.</h3>
+              <p>Every property and water system is different. If you have a question that isn&apos;t covered here, talk to our team.</p>
+              <a className="button button-primary button-pill" href={site.phoneLink}>
+                <Icon name="phone" size={17} />Call {site.phone}
+              </a>
+              <Link to="/contact" className="text-link">Send us a message <Icon name="arrowRight" size={16} /></Link>
+            </aside>
+          </div>
           <div className="faq-list" data-reveal-stagger="">
-            {site.faqs.map((faq, index) => (
-              <article className="faq-item" key={faq.question} data-reveal-item="">
-                <button
-                  className="faq-summary"
-                  type="button"
-                  aria-expanded={openIndex === index}
-                  onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
+            {site.faqs.map((faq, index) => {
+              const isOpen = openIndex === index;
+              return (
+                <article
+                  className={`faq-item${isOpen ? " is-open" : ""}`}
+                  key={faq.question}
+                  data-reveal-item=""
                 >
-                  <span className="faq-number">0{index + 1}</span>
-                  <span>{faq.question}</span>
-                  <span className="faq-chevron"><Icon name="chevronDown" size={19} /></span>
-                </button>
-                <AnimatePresence initial={false}>
-                  {openIndex === index && (
-                    <motion.div
-                      className="faq-answer"
-                      initial={reducedMotion ? false : { height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={reducedMotion ? undefined : { height: 0, opacity: 0 }}
-                      transition={{ duration: reducedMotion ? 0 : motionConfig.duration.ui, ease: motionConfig.ease }}
+                  <button
+                    className="faq-summary"
+                    type="button"
+                    aria-expanded={isOpen}
+                    onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                  >
+                    <span className="faq-question-text">{faq.question}</span>
+                    <motion.span
+                      className="faq-toggle-icon"
+                      aria-hidden="true"
+                      animate={reducedMotion ? undefined : { rotate: isOpen ? 45 : 0 }}
+                      transition={{ duration: motionConfig.duration.fast, ease: motionConfig.ease }}
                     >
-                      <p>{faq.answer}</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </article>
-            ))}
+                      <Icon name="plus" size={18} />
+                    </motion.span>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        className="faq-answer"
+                        initial={reducedMotion ? false : { height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={reducedMotion ? undefined : { height: 0, opacity: 0 }}
+                        transition={{ duration: reducedMotion ? 0 : motionConfig.duration.ui, ease: motionConfig.ease }}
+                      >
+                        <p>{faq.answer}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>

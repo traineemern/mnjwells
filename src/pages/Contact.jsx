@@ -1,11 +1,14 @@
 import { lazy, Suspense, useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "motion/react";
 import { site, pageMeta } from "../data/site.js";
 import Seo from "../components/Seo.jsx";
 import { Icon } from "../components/Icons.jsx";
 import successAnimation from "../assets/lottie/success-check.json";
-/* [NEW] Masked-baseline word reveal for hero heading */
 import MaskedHeading from "../components/MaskedHeading.jsx";
+import { useReducedMotion } from "../motion/useReducedMotion";
+import { motionConfig } from "../motion/config";
+
 const Lottie = lazy(() =>
   import("lottie-react").then((module) => ({ default: module.LottieLight }))
 );
@@ -22,6 +25,7 @@ const initialForm = {
 };
 
 export default function Contact() {
+  const reducedMotion = useReducedMotion();
   const [form, setForm] = useState(initialForm);
   const [status, setStatus] = useState({ type: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
@@ -71,96 +75,118 @@ export default function Contact() {
   return (
     <>
       <Seo {...pageMeta.contact} path="/contact" />
-      <section className="page-hero contact-hero">
-        <div className="page-wrap page-hero-inner">
-          <div className="breadcrumb" data-hero-item="" style={{ "--hero-index": 0 }}><Link to="/">Home</Link><span>/</span><span>Contact</span></div>
-          <span className="eyebrow eyebrow-light" data-hero-item="" style={{ "--hero-index": 1 }}>Let's get your water flowing</span>
-          {/* [UPDATED] Masked-baseline word reveal on hero headline */}
-          <MaskedHeading
-            lines={[
-              [{ text: "Tell us what you" }],
-              [{ text: "need a hand with." }],
-            ]}
-          />
-          <p data-hero-item="" style={{ "--hero-index": 2 }}>Request a free estimate or call our Newaygo team. We're ready to listen.</p>
-        </div>
-      </section>
-      <section className="contact-section section-pad">
-        <div className="page-wrap contact-layout">
-          {/* [UPDATED] Scroll reveals on contact form and contact details */}
-          <div className="contact-form-wrap" data-reveal="">
-            <div className="form-heading">
-              <span className="eyebrow">Request a free estimate</span>
-              <h2>How can we help?</h2>
-              <p>Share a few details and we'll get back to you. Fields marked with <span aria-hidden="true">*</span> are required.</p>
-            </div>
-            <form className="estimate-form" onSubmit={submit} noValidate>
-              <div className="form-row">
-                <label>Name <span aria-hidden="true">*</span><input name="name" autoComplete="name" value={form.name} onChange={update} required minLength={2} placeholder="Your name" /></label>
-                <label>Phone <span aria-hidden="true">*</span><input name="phone" type="tel" autoComplete="tel" value={form.phone} onChange={update} required placeholder="(616) 555-0123" /></label>
+      <section className="contact-showcase">
+        <div className="contact-showcase-backdrop" aria-hidden="true" />
+        <div className="page-wrap">
+          <div className="contact-showcase-grid">
+            <div className="contact-showcase-info">
+              <div className="contact-showcase-top">
+                <div className="breadcrumb" data-hero-item="" style={{ "--hero-index": 0 }}>
+                  <Link to="/">Home</Link><span>/</span><span>Contact</span>
+                </div>
+                <span className="eyebrow eyebrow-light" data-hero-item="" style={{ "--hero-index": 1 }}>
+                  Let&apos;s get your water flowing
+                </span>
+                <MaskedHeading
+                  lines={[
+                    [{ text: "Tell us what you" }],
+                    [{ text: "need a hand with." }],
+                  ]}
+                />
+                <p className="contact-showcase-lead" data-hero-item="" style={{ "--hero-index": 2 }}>
+                  Request a free estimate or call our Newaygo team. We&apos;re ready to listen.
+                </p>
               </div>
-              <label>Email address <span aria-hidden="true">*</span><input name="email" type="email" autoComplete="email" value={form.email} onChange={update} required placeholder="you@example.com" /></label>
-              <div className="form-row">
-                <label>Service needed <span aria-hidden="true">*</span>
-                  <select name="service" value={form.service} onChange={update} required>
-                    <option value="">Choose a service</option>
-                    {site.serviceOptions.map((option) => <option key={option}>{option}</option>)}
+
+              {/* [UPDATED] Map fills remaining column height so its bottom aligns with the end of the form */}
+              <div className="contact-inline-map" data-hero-item="" style={{ "--hero-index": 3 }}>
+                <div className="map-frame contact-map-frame">
+                  <iframe
+                    title={`Map showing ${site.address.formatted}`}
+                    src={`https://www.google.com/maps?q=${encodeURIComponent(site.address.formatted)}&output=embed`}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
+                  />
+                  <div className="map-floating-card">
+                    <span className="map-floating-icon"><Icon name="mapPin" size={16} /></span>
+                    <div>
+                      <strong>{site.name}</strong>
+                      <p>{site.address.street}, {site.address.city}, {site.address.region} {site.address.postalCode}</p>
+                      <a href={site.googleBusinessUrl} target="_blank" rel="noreferrer" className="text-link">
+                        Open in Google Maps <Icon name="arrowRight" size={14} />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <motion.div
+              className="contact-form-wrap"
+              initial={reducedMotion ? false : { opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: reducedMotion ? 0 : motionConfig.duration.reveal, ease: motionConfig.ease, delay: reducedMotion ? 0 : 0.12 }}
+            >
+              <div className="form-heading">
+                <span className="eyebrow">Request a free estimate</span>
+                <h2>How can we help?</h2>
+                <p>Share a few details and we&apos;ll get back to you. Fields marked with <span aria-hidden="true">*</span> are required.</p>
+              </div>
+              <form className="estimate-form" onSubmit={submit} noValidate>
+                <div className="form-row">
+                  <label>Name <span aria-hidden="true">*</span><input name="name" autoComplete="name" value={form.name} onChange={update} required minLength={2} placeholder="Your name" /></label>
+                  <label>Phone <span aria-hidden="true">*</span><input name="phone" type="tel" autoComplete="tel" value={form.phone} onChange={update} required placeholder="(616) 555-0123" /></label>
+                </div>
+                <label>Email address <span aria-hidden="true">*</span><input name="email" type="email" autoComplete="email" value={form.email} onChange={update} required placeholder="you@example.com" /></label>
+                <div className="form-row">
+                  {/* [UPDATED] Restored dropdown select for service needed */}
+                  <label>Service needed <span aria-hidden="true">*</span>
+                    <select name="service" value={form.service} onChange={update} required>
+                      <option value="">Choose a service</option>
+                      {site.serviceOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+                    </select>
+                  </label>
+                  <label>Property address or town <span aria-hidden="true">*</span><input name="location" autoComplete="street-address" value={form.location} onChange={update} required placeholder="Street address or nearby town" /></label>
+                </div>
+                <label>Preferred contact time
+                  <select name="contactTime" value={form.contactTime} onChange={update}>
+                    <option value="">No preference</option>
+                    <option>Morning</option>
+                    <option>Afternoon</option>
+                    <option>Evening</option>
                   </select>
                 </label>
-                <label>Property address or town <span aria-hidden="true">*</span><input name="location" autoComplete="street-address" value={form.location} onChange={update} required placeholder="Street address or nearby town" /></label>
-              </div>
-              <label>Preferred contact time
-                <select name="contactTime" value={form.contactTime} onChange={update}>
-                  <option value="">No preference</option>
-                  <option>Morning</option>
-                  <option>Afternoon</option>
-                  <option>Evening</option>
-                </select>
-              </label>
-              <label>Tell us a little more <span aria-hidden="true">*</span><textarea name="message" rows="5" value={form.message} onChange={update} required minLength={10} placeholder="What are you looking to get done?" /></label>
-              <div className="honeypot" aria-hidden="true">
-                <label htmlFor="_gotcha">Leave this field empty</label>
-                <input id="_gotcha" name="_gotcha" tabIndex="-1" autoComplete="off" value={form._gotcha} onChange={update} />
-              </div>
-              <button className="button button-primary button-submit" type="submit" disabled={submitting}>
-                {submitting ? "Sending request…" : "Send estimate request"} <Icon name="arrowRight" size={18} />
-              </button>
-              <p className="form-privacy">Your information is only used to respond to your request.</p>
-              <div className={`form-message${status.type ? ` ${status.type}` : ""}`} role="status" aria-live="polite">
-                {status.type === "success" && (
-                  <span className="form-success-lottie" aria-hidden="true">
-                    <Suspense fallback={null}>
-                      <Lottie src={successAnimation} loop={false} autoplay />
-                    </Suspense>
-                  </span>
-                )}
-                {status.message}
-              </div>
-            </form>
+                <label>Tell us a little more <span aria-hidden="true">*</span><textarea name="message" rows="4" value={form.message} onChange={update} required minLength={10} placeholder="What are you looking to get done?" /></label>
+                <div className="honeypot" aria-hidden="true">
+                  <label htmlFor="_gotcha">Leave this field empty</label>
+                  <input id="_gotcha" name="_gotcha" tabIndex="-1" autoComplete="off" value={form._gotcha} onChange={update} />
+                </div>
+                <button className="button button-primary button-pill button-submit" type="submit" disabled={submitting}>
+                  {submitting ? "Sending request…" : "Send estimate request"} <Icon name="arrowRight" size={18} />
+                </button>
+                <p className="form-privacy">Your information is only used to respond to your request.</p>
+                <div className={`form-message${status.type ? ` ${status.type}` : ""}`} role="status" aria-live="polite">
+                  {status.type === "success" && (
+                    <span className="form-success-lottie" aria-hidden="true">
+                      <Suspense fallback={null}>
+                        <Lottie src={successAnimation} loop={false} autoplay />
+                      </Suspense>
+                    </span>
+                  )}
+                  {status.message}
+                </div>
+              </form>
+            </motion.div>
           </div>
-          <aside className="contact-details" data-reveal="">
-            <div className="contact-details-top">
-              <span className="eyebrow eyebrow-light">Prefer to talk?</span>
-              <h2>We&apos;re right here in Newaygo.</h2>
-              <p>Give us a call and tell us what's going on. We'll help you find the right next step.</p>
-              <a className="contact-call" href={site.phoneLink}><Icon name="phone" size={21} />{site.phone}</a>
-            </div>
-            <div className="contact-info-list">
-              <a href={`mailto:${site.email}`}><span className="contact-info-icon"><Icon name="mail" size={18} /></span><span><small>Email</small><strong>{site.email}</strong></span></a>
-              <div><span className="contact-info-icon"><Icon name="mapPin" size={18} /></span><span><small>Visit or write</small><strong>{site.address.street}<br />{site.address.city}, {site.address.region} {site.address.postalCode}</strong></span></div>
-              <div><span className="contact-info-icon"><Icon name="clock" size={18} /></span><span><small>Hours</small><strong>{site.businessHours}<br />{site.emergencyHours}</strong></span></div>
-            </div>
-            <div className="map-frame">
-              <iframe
-                title={`Map showing ${site.address.formatted}`}
-                src={`https://www.google.com/maps?q=${encodeURIComponent(site.address.formatted)}&output=embed`}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-              <a href={site.googleBusinessUrl} target="_blank" rel="noreferrer">Open in Google Maps <Icon name="arrowRight" size={14} /></a>
-            </div>
-          </aside>
+
+          {/* [UPDATED] Section ends right after the brand quote */}
+          <div className="contact-showcase-bottom" data-reveal="">
+            <blockquote className="contact-quote">
+              <p>&ldquo;Good water starts with honest work. Whether it&apos;s a new well or a weekend repair, we treat every West Michigan property like our own neighbor&apos;s.&rdquo;</p>
+              <footer>— {site.owners[0]} &amp; {site.owners[1]}, {site.name} · Newaygo, MI</footer>
+            </blockquote>
+          </div>
         </div>
       </section>
     </>

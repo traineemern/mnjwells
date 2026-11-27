@@ -1,11 +1,15 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { site, pageMeta } from "../data/site.js";
 import Seo from "../components/Seo.jsx";
 import SectionHeading from "../components/SectionHeading.jsx";
 import CTA from "../components/CTA.jsx";
 import { Icon } from "../components/Icons.jsx";
-/* [NEW] Masked-baseline word reveal for hero heading */
+/* [NEW] Masked-baseline word reveal & lazy GSAP ScrollTrigger hero parallax */
 import MaskedHeading from "../components/MaskedHeading.jsx";
+import { initHeroParallax } from "../motion/reveal.js";
+/* [NEW] Standalone animated Michigan service-area map */
+import MichiganServiceMap from "../components/MichiganServiceMap.jsx";
 
 const businessSchema = {
   "@context": "https://schema.org",
@@ -33,11 +37,18 @@ const featureIcons = { home: "home", shield: "shield", phone: "phone" };
 const townId = (town) => `town-${town.toLowerCase().replace(/\s+/g, "-")}`;
 
 export default function Home() {
+  const heroImageRef = useRef(null);
+
+  /* [NEW] Lazy GSAP ScrollTrigger parallax on desktop/capable devices */
+  useEffect(() => {
+    return initHeroParallax(".hero", heroImageRef.current);
+  }, []);
+
   return (
     <>
       <Seo {...pageMeta.home} path="/" schema={businessSchema} />
       <section className="hero">
-        <div className="hero-image" role="img" aria-label="M&J Water Wells drilling truck parked at a job site" />
+        <div ref={heroImageRef} className="hero-image" role="img" aria-label="M&J Water Wells drilling truck parked at a job site" />
         <div className="hero-shade" />
         <div className="hero-content page-wrap">
           <div className="hero-text">
@@ -155,17 +166,8 @@ export default function Home() {
             <div className="area-image-note"><Icon name="mapPin" size={20} /><span><b>Rooted in Newaygo</b><small>Serving neighbors across West Michigan</small></span></div>
           </div>
         </div>
-        <div className="page-wrap town-coverage">
-          <h3 data-reveal="">Well service in nearby towns</h3>
-          <div className="town-coverage-grid" data-reveal-stagger="">
-            {site.serviceAreas.towns.map((town) => (
-              <article id={townId(town)} className="town-coverage-card" key={town} data-reveal-item="">
-                <h4>{town}, Michigan</h4>
-                <Link to="/contact" className="text-link">Ask about service here <Icon name="arrowRight" size={15} /></Link>
-              </article>
-            ))}
-          </div>
-        </div>
+        {/* [UPDATED] Replaced town-coverage card grid with standalone animated Michigan service-area map */}
+        <MichiganServiceMap />
       </section>
 
       <CTA />

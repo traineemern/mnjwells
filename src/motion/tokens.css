@@ -1,0 +1,12 @@
+/* [NEW] Shared CSS motion tokens: easing curves, durations, and stagger intervals */
+:root {
+  --ease-entrance: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-ui: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --duration-hover: 180ms;
+  --duration-ui: 350ms;
+  --duration-reveal: 720ms;
+
+  --stagger-word: 50ms;
+  --stagger-reveal: 70ms;
+}
