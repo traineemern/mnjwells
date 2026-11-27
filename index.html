@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="en">
+<!-- /* [UPDATED] Added no-js class for progressive enhancement fallback */ -->
+<html lang="en" class="no-js">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,23 @@
     <meta name="description" content="Family-owned well drilling and repair serving Newaygo and West Michigan. Call M&J Water Wells for residential, commercial, and irrigation service." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>M&J Water Wells | West Michigan Well Drilling</title>
+    <!-- /* [NEW] Preconnect, preload, and non-blocking Google Fonts stylesheet (2 families, 3 weights each, display=swap) */ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@600;700;800&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@600;700;800&display=swap"
+    />
+    <!-- /* [NEW] Immediate no-js -> js class swap so content renders by default if JS fails */ -->
+    <script>
+      document.documentElement.classList.remove("no-js");
+      document.documentElement.classList.add("js");
+    </script>
   </head>
   <body>
     <div id="root"></div>

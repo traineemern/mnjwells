@@ -4,6 +4,8 @@ import { site, pageMeta } from "../data/site.js";
 import Seo from "../components/Seo.jsx";
 import { Icon } from "../components/Icons.jsx";
 import successAnimation from "../assets/lottie/success-check.json";
+/* [NEW] Masked-baseline word reveal for hero heading */
+import MaskedHeading from "../components/MaskedHeading.jsx";
 const Lottie = lazy(() =>
   import("lottie-react").then((module) => ({ default: module.LottieLight }))
 );
@@ -71,15 +73,22 @@ export default function Contact() {
       <Seo {...pageMeta.contact} path="/contact" />
       <section className="page-hero contact-hero">
         <div className="page-wrap page-hero-inner">
-          <div className="breadcrumb"><Link to="/">Home</Link><span>/</span><span>Contact</span></div>
-          <span className="eyebrow eyebrow-light">Let's get your water flowing</span>
-          <h1>Tell us what you<br />need a hand with.</h1>
-          <p>Request a free estimate or call our Newaygo team. We're ready to listen.</p>
+          <div className="breadcrumb" data-hero-item="" style={{ "--hero-index": 0 }}><Link to="/">Home</Link><span>/</span><span>Contact</span></div>
+          <span className="eyebrow eyebrow-light" data-hero-item="" style={{ "--hero-index": 1 }}>Let's get your water flowing</span>
+          {/* [UPDATED] Masked-baseline word reveal on hero headline */}
+          <MaskedHeading
+            lines={[
+              [{ text: "Tell us what you" }],
+              [{ text: "need a hand with." }],
+            ]}
+          />
+          <p data-hero-item="" style={{ "--hero-index": 2 }}>Request a free estimate or call our Newaygo team. We're ready to listen.</p>
         </div>
       </section>
       <section className="contact-section section-pad">
         <div className="page-wrap contact-layout">
-          <div className="contact-form-wrap">
+          {/* [UPDATED] Scroll reveals on contact form and contact details */}
+          <div className="contact-form-wrap" data-reveal="">
             <div className="form-heading">
               <span className="eyebrow">Request a free estimate</span>
               <h2>How can we help?</h2>
@@ -129,7 +138,7 @@ export default function Contact() {
               </div>
             </form>
           </div>
-          <aside className="contact-details">
+          <aside className="contact-details" data-reveal="">
             <div className="contact-details-top">
               <span className="eyebrow eyebrow-light">Prefer to talk?</span>
               <h2>We&apos;re right here in Newaygo.</h2>

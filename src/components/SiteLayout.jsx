@@ -1,16 +1,43 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { useReducedMotion } from "../motion/useReducedMotion";
+import { motionConfig } from "../motion/config";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 import { site } from "../data/site.js";
 import { Icon } from "./Icons.jsx";
+/* [NEW] Vanilla JS IntersectionObserver & View Transitions helper */
+import { initRevealObserver, runViewTransition } from "../motion/reveal.js";
 
 export default function SiteLayout() {
   const { pathname } = useLocation();
   const reducedMotion = useReducedMotion();
   const [showMobileBar, setShowMobileBar] = useState(false);
+
+  /* [NEW] Initialize one-shot scroll reveals on route navigation */
+  useEffect(() => {
+    return initRevealObserver(document);
+  }, [pathname]);
+
+  /* [NEW] Smooth anchor transitions via View Transitions API with graceful fallback */
+  useEffect(() => {
+    const onHashClick = (event) => {
+      const link = event.target.closest('a[href^="#"]');
+      if (!link) return;
+      const hash = link.getAttribute("href");
+      if (!hash || hash === "#") return;
+      const target = document.querySelector(hash);
+      if (!target) return;
+      event.preventDefault();
+      runViewTransition(() => {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.history.replaceState(null, "", hash);
+      });
+    };
+    document.addEventListener("click", onHashClick);
+    return () => document.removeEventListener("click", onHashClick);
+  }, []);
 
   useEffect(() => {
     if (pathname === "/") {
@@ -34,17 +61,10 @@ export default function SiteLayout() {
     <div id="top" className="site-shell">
       <Header />
       <main id="main">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={pathname}
-            initial={reducedMotion ? false : { opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reducedMotion ? undefined : { opacity: 0 }}
-            transition={{ duration: reducedMotion ? 0 : 0.25, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <Outlet />
-          </motion.div>
-        </AnimatePresence>
+        {/* [UPDATED] CSS fade stage fallback for route transitions */}
+        <div key={pathname} className="page-transition-stage">
+          <Outlet />
+        </div>
       </main>
       <Footer />
       <motion.div
@@ -52,7 +72,7 @@ export default function SiteLayout() {
         aria-label="Quick contact"
         initial={false}
         animate={showMobileBar ? { y: 0, opacity: 1 } : { y: 80, opacity: 0 }}
-        transition={{ duration: reducedMotion ? 0 : 0.25, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: reducedMotion ? 0 : motionConfig.duration.ui, ease: motionConfig.ease }}
         aria-hidden={!showMobileBar}
       >
         <a className="mobile-sticky-call" href={site.phoneLink} tabIndex={showMobileBar ? 0 : -1}><Icon name="phone" size={18} />Call</a>

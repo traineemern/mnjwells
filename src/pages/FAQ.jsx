@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { site, pageMeta } from "../data/site.js";
 import Seo from "../components/Seo.jsx";
-import SectionHeading from "../components/SectionHeading.jsx";
 import CTA from "../components/CTA.jsx";
 import { Icon } from "../components/Icons.jsx";
 import { useReducedMotion } from "../motion/useReducedMotion";
 import { motionConfig } from "../motion/config";
+/* [NEW] Masked-baseline word reveal for hero heading */
+import MaskedHeading from "../components/MaskedHeading.jsx";
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -21,50 +22,38 @@ const faqSchema = {
 
 export default function FAQ() {
   const reducedMotion = useReducedMotion();
-  const heroRef = useRef(null);
   const [openIndex, setOpenIndex] = useState(0);
-
-  useEffect(() => {
-    if (reducedMotion) return undefined;
-    let gsapContext;
-    let cancelled = false;
-    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([{ gsap }, { ScrollTrigger }]) => {
-      if (cancelled) return;
-      gsap.registerPlugin(ScrollTrigger);
-      gsapContext = gsap.context(() => {
-        gsap.to(heroRef.current, {
-          y: 40,
-          ease: "none",
-          scrollTrigger: { trigger: ".faq-hero", start: "top top", end: "bottom top", scrub: true },
-        });
-      });
-    }).catch(() => {});
-    return () => { cancelled = true; gsapContext?.revert(); };
-  }, [reducedMotion]);
 
   return (
     <>
       <Seo {...pageMeta.faq} path="/faq" schema={faqSchema} />
-      <section ref={heroRef} className="page-hero faq-hero">
+      <section className="page-hero faq-hero">
         <div className="page-wrap page-hero-inner">
-          <div className="breadcrumb"><Link to="/">Home</Link><span>/</span><span>FAQs</span></div>
-          <span className="eyebrow eyebrow-light">A few things you might be wondering</span>
-          <h1>Good questions.<br />Straight answers.</h1>
-          <p>Here are answers to some common well drilling and water system questions.</p>
+          <div className="breadcrumb" data-hero-item="" style={{ "--hero-index": 0 }}><Link to="/">Home</Link><span>/</span><span>FAQs</span></div>
+          <span className="eyebrow eyebrow-light" data-hero-item="" style={{ "--hero-index": 1 }}>A few things you might be wondering</span>
+          {/* [UPDATED] Masked-baseline word reveal on hero headline */}
+          <MaskedHeading
+            lines={[
+              [{ text: "Good questions." }],
+              [{ text: "Straight answers." }],
+            ]}
+          />
+          <p data-hero-item="" style={{ "--hero-index": 2 }}>Here are answers to some common well drilling and water system questions.</p>
         </div>
       </section>
       <section className="faq-section section-pad">
         <div className="page-wrap faq-layout">
-          <aside className="faq-aside">
+          <aside className="faq-aside" data-reveal="">
             <span className="eyebrow">Need a hand?</span>
             <h2>We&apos;re happy to help.</h2>
             <p>Every property and water system is different. If you have a question that isn't covered here, talk to our team.</p>
             <a className="button button-primary" href={site.phoneLink}><Icon name="phone" size={17} />{site.phone}</a>
             <Link to="/contact" className="text-link">Send us a message <Icon name="arrowRight" size={16} /></Link>
           </aside>
-          <div className="faq-list">
+          {/* [UPDATED] Staggered IntersectionObserver reveal on FAQ items */}
+          <div className="faq-list" data-reveal-stagger="">
             {site.faqs.map((faq, index) => (
-              <article className="faq-item" key={faq.question}>
+              <article className="faq-item" key={faq.question} data-reveal-item="">
                 <button
                   className="faq-summary"
                   type="button"

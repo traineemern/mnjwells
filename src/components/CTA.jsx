@@ -10,7 +10,8 @@ export default function CTA({
 }) {
   return (
     <section className={`cta-band${compact ? " cta-band-compact" : ""}`}>
-      <div className="page-wrap cta-inner">
+      {/* [UPDATED] Added scroll reveal */}
+      <div className="page-wrap cta-inner" data-reveal="">
         <div className="cta-copy">
           <span className="eyebrow eyebrow-light">{eyebrow}</span>
           <h2>{title}</h2>
